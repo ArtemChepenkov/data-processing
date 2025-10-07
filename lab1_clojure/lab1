@@ -1,0 +1,24 @@
+(defn all-strings [alphabet n]
+  (cond
+    (<= n 0) '()
+    (= n 1) alphabet
+    :else
+    (reduce
+      (fn [acc _]
+        (reduce
+          (fn [res prefix]
+            (let [lastch (subs prefix (dec (count prefix)))] ; последний символ как строка
+              (concat res
+                      (map (fn [ch] (str prefix ch))
+                           (remove #(= lastch %) alphabet)))))
+          '()
+          acc))
+      alphabet
+      (range (dec n)))))
+
+
+(println (all-strings ["a" "b" "c"] 2))
+;; => ("ab" "ac" "ba" "bc" "ca" "cb")
+
+(println (all-strings ["a" "b" "c"] 3))
+;; => ("aba" "abc" "aca" "acb" "bab" "bac" "bca" "bcb" "cab" "cac" "cba" "cbc")

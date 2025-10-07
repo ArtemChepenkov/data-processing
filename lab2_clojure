@@ -1,0 +1,20 @@
+(defn primes
+  "Returns a lazy infinite sequence of prime numbers using an
+   incremental Sieve of Eratosthenes (dictionary-based).
+   Usage: (take 10 (primes)) => (2 3 5 7 11 13 17 19 23 29)"
+  []
+  (letfn [(step [D q]
+            (lazy-seq
+              (if-let [ps (get D q)]
+                ;; q — составное: переносим его метки дальше
+                (let [D' (reduce (fn [m p]
+                                   (let [next (+ q p)]
+                                     (update m next (fnil conj []) p)))
+                                 (dissoc D q)
+                                 ps)]
+                  (step D' (inc q)))
+                ;; q — простое: возвращаем q и помечаем q*q
+                (cons q (step (assoc D (* q q) [q]) (inc q))))))]
+    (step {} 2)))
+
+(println "first 20 primes:" (take 20 (primes)))
